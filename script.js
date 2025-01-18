@@ -16,6 +16,7 @@ const addTodo = () => {
     }
     if (addBtn.value === "Edit") {
         editTodo.target.previousElementSibling.innerHTML = inputText;
+        editLocalTodos(inputText);
         addBtn.value = "add";
         inputBox.value = "";
     }
@@ -52,7 +53,7 @@ const updateTodo = (e) => {
     // console.log(e.target.innerHTML);
     if (e.target.innerHTML === "Remove") {
         todoList.removeChild(e.target.parentElement);
-       // deleteLocalTodos(e.target.parentElement);
+        deleteLocalTodos(e.target.parentElement);
     }
     if (e.target.innerHTML === "Edit") {
         inputBox.value = e.target.previousElementSibling.innerHTML;
@@ -62,7 +63,7 @@ const updateTodo = (e) => {
 
     }
 }
-
+//function to save local todos
 const saveLocalTodos = (todo) => {
     let todos = [];
     if (localStorage.getItem("todos") === null) {
@@ -74,6 +75,7 @@ const saveLocalTodos = (todo) => {
     todos.push(todo);
     localStorage.setItem("todos", JSON.stringify(todos));
 }
+//function to get local todos
 const getLocalTodos = () => {
     let todos = [];
     if (localStorage.getItem("todos") === null) {
@@ -106,21 +108,29 @@ const getLocalTodos = () => {
         });
     }
 }
-//const deleteLocalTodos = () =>{
-  //  let todos = [];
-   // if (localStorage.getItem("todos") === null) {
-    //    todos = [];
-   // }
-    //else {
-    //    todos = JSON.parse(localStorage.getItem("todos"));
-   // }
-    //let todoText = todos;
-    //console.log(todoText.children[0].innerHTML);
-    //let todoIndex = todos.indexOf(todoText);
-    //todos.splice(todoIndex ,1);
-    //localStorage.setItem("todos" , JSON.stringify(todos));
+//function to delete local todos
+const deleteLocalTodos = (todo) => {
+    let todos = [];
+    if (localStorage.getItem("todos") === null) {
+        todos = [];
+    }
+    else {
+        todos = JSON.parse(localStorage.getItem("todos"));
+    }
+    let todoText = todo.children[0].innerHTML;
+    let todoIndex = todos.indexOf(todoText);
+    todos.splice(todoIndex , 1);
+    localStorage.setItem("todos" ,JSON.stringify (todos));
+    console.log(todoIndex);
     
-//}
-document.addEventListener('DOMContentLoaded' , getLocalTodos);
+    
+}
+const editLocalTodos = (todo) => {
+    let todos = JSON.parse(localStorage.getItem("todos"));
+    let todoIndex = todos.indexOf(todo);
+    todos[todoIndex] = inputBox.value;
+    localStorage.setItem("todos" , JSON.stringify(todos));
+}
+document.addEventListener('DOMContentLoaded', getLocalTodos);
 addBtn.addEventListener('click', addTodo);
 todoList.addEventListener('click', updateTodo);
